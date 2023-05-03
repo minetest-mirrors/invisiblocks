@@ -4,6 +4,8 @@
 
 This mod exists to add invisible blocks into the world that can be used as a barrier to stop players and mobs, along with invisible light sources to illuiminate areas and invisible mob walls a player can walk through but make a mob stop and ponder.
 
+![screenshot.jpg](screenshot.jpg)
+
  - Craft 8x Invisible Barrier with 8x glass and 1x stone top middle
  - Craft 8x Invisible Light with 8x glass and 1x meselamp top middle
  - Craft 8x Invisible Mob Wall with 8x glass and 1x wood top middle
