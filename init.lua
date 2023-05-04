@@ -21,7 +21,8 @@ minetest.register_node("invisiblocks:barrier", {
 	paramtype = "light",
 	sunlight_propagates = true,
 	sounds = def and default.node_sound_glass_defaults(),
-	groups = {cracky = 3, oddly_breakable_by_hand = 3}
+	groups = {invisible = 1},
+	on_blast = function() end
 })
 
 helper = "invisiblocks_block.png^[multiply:#ffff0070"
@@ -37,11 +38,12 @@ minetest.register_node("invisiblocks:light", {
 	walkable = false,
 	light_source = 14,
 	sounds = def and default.node_sound_glass_defaults(),
-	groups = {cracky = 3, oddly_breakable_by_hand = 3},
+	groups = {invisible = 1},
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
-	}
+	},
+	on_blast = function() end
 })
 
 helper = "invisiblocks_block.png^[multiply:#00ff0070"
@@ -56,11 +58,12 @@ minetest.register_node("invisiblocks:mob_wall", {
 	sunlight_propagates = true,
 	walkable = false,
 	sounds = def and default.node_sound_glass_defaults(),
-	groups = {cracky = 3, oddly_breakable_by_hand = 3},
+	groups = {invisible = 1},
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
-	}
+	},
+	on_blast = function() end
 })
 
 ---
@@ -129,11 +132,13 @@ local function show_blocks(list, icon)
 	end
 end
 
+-- USE tool to show invisible blocks in 10 node radius
+-- PLACE or Right-Click to remove invisible blocks once placed
 minetest.register_tool("invisiblocks:show_stick", {
-	description = S("Show Stick"),
+	description = S("Show Stick (USE to Show, PLACE to Remove)"),
 	inventory_image = "invisiblocks_stick.png",
 	stack_max = 1,
-	groups = {not_in_creative_inventory = 1, stick = 1},
+	groups = {stick = 1},
 
 	on_use = function(itemstack, user, pointed_thing)
 
@@ -161,9 +166,37 @@ minetest.register_tool("invisiblocks:show_stick", {
 		show_blocks(list, "invisiblocks_mob_wall.png")
 
 		if not minetest.is_creative_enabled(user:get_player_name()) then
-			itemstack:add_wear(65535 / 100) -- 100 uses
+			itemstack:add_wear(65535 / 150) -- 150 uses
 		end
 
 		return itemstack
+	end,
+
+	on_place = function(itemstack, placer, pointed_thing)
+
+		if pointed_thing.type ~= "node" then
+			return
+		end
+
+		local pos = pointed_thing.under
+		local node_name = minetest.get_node(pos).name
+
+		if node_name == "invisiblocks:barrier"
+		or node_name == "invisiblocks:light"
+		or node_name == "invisiblocks:mob_wall" then
+
+			local inv = placer:get_inventory()
+
+			if inv:room_for_item("main", {name = node_name}) then
+				inv:add_item("main", node_name)
+			else
+				minetest.add_item(pos, {name = node_name})
+			end
+
+			minetest.remove_node(pos)
+
+			minetest.sound_play("default_break_glass", {
+					pos = pos, gain = 1.0, max_hear_distance = 5}, true)
+		end
 	end
 })
