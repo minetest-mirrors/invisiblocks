@@ -179,6 +179,12 @@ minetest.register_tool("invisiblocks:show_stick", {
 		end
 
 		local pos = pointed_thing.under
+		local player_name = placer:get_player_name()
+
+		if minetest.is_protected(pos, player_name) then
+			return
+		end
+
 		local node_name = minetest.get_node(pos).name
 
 		if node_name == "invisiblocks:barrier"
