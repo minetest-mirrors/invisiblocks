@@ -2,7 +2,7 @@
 
 ### by TenPlus1
 
-This mod exists to add invisible blocks into the world that can be used as a barrier to stop players and mobs, along with invisible light sources to illuiminate areas and invisible mob walls a player can walk through but make a mob stop and ponder.
+This mod exists to add invisible blocks into the world that can be used as a barrier to stop players and mobs, along with invisible light sources to illuiminate areas and invisible mob walls a player can walk through but will make a mob stop and ponder.
 
 ![screenshot.jpg](screenshot.jpg)
 

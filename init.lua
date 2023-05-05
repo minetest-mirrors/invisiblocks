@@ -122,7 +122,7 @@ local function show_blocks(list, icon)
 			pos = list[n],
 			velocity = {x = 0, y = 0, z = 0},
 			acceleration = {x = 0, y = 0, z = 0},
-			expirationtime = 10,
+			expirationtime = 5,
 			size = 4,
 			collisiondetection = false,
 			vertical = false,
