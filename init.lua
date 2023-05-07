@@ -16,12 +16,13 @@ local helper = "invisiblocks_block.png^[multiply:#ff000070"
 minetest.register_node("invisiblocks:barrier", {
 	description = S("Invisible Barrier Block"),
 	drawtype = "airlike",
+	buildable_to = false,
 	inventory_image = helper,
 	wield_image = helper,
 	paramtype = "light",
 	sunlight_propagates = true,
 	sounds = def and default.node_sound_glass_defaults(),
-	groups = {invisible = 1},
+	groups = {invisible = 1, unbreakable = 1},
 	on_blast = function() end
 })
 
@@ -31,6 +32,7 @@ helper = "invisiblocks_block.png^[multiply:#ffff0070"
 minetest.register_node("invisiblocks:light", {
 	description = S("Invisible Light Source"),
 	drawtype = "airlike",
+	buildable_to = false,
 	inventory_image = helper,
 	wield_image = helper,
 	paramtype = "light",
@@ -38,7 +40,7 @@ minetest.register_node("invisiblocks:light", {
 	walkable = false,
 	light_source = 14,
 	sounds = def and default.node_sound_glass_defaults(),
-	groups = {invisible = 1},
+	groups = {invisible = 1, unbreakable = 1},
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
@@ -52,13 +54,14 @@ helper = "invisiblocks_block.png^[multiply:#00ff0070"
 minetest.register_node("invisiblocks:mob_wall", {
 	description = S("Invisible Mob Wall"),
 	drawtype = "airlike",
+	buildable_to = false,
 	inventory_image = helper,
 	wield_image = helper,
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
 	sounds = def and default.node_sound_glass_defaults(),
-	groups = {invisible = 1},
+	groups = {invisible = 1, unbreakable = 1},
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
