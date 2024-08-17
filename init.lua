@@ -1,18 +1,16 @@
----
---- Variables and Settings
----
+
+-- Variables and Settings
 
 local S = minetest.get_translator("invisiblocks")
 local def = minetest.get_modpath("default") and true
 local recipes = minetest.settings:get_bool("invisiblocks.hide_recipes") ~= true
 
----
---- Nodes
----
+-- Nodes
 
 local helper = "invisiblocks_block.png^[multiply:#ff000070"
 
 -- Invisible Barrier
+
 minetest.register_node("invisiblocks:barrier", {
 	description = S("Invisible Barrier Block"),
 	drawtype = "airlike",
@@ -29,6 +27,7 @@ minetest.register_node("invisiblocks:barrier", {
 helper = "invisiblocks_block.png^[multiply:#ffff0070"
 
 -- Invisible Light
+
 minetest.register_node("invisiblocks:light", {
 	description = S("Invisible Light Source"),
 	drawtype = "airlike",
@@ -51,6 +50,7 @@ minetest.register_node("invisiblocks:light", {
 helper = "invisiblocks_block.png^[multiply:#00ff0070"
 
 -- Invisible Mob Wall
+
 minetest.register_node("invisiblocks:mob_wall", {
 	description = S("Invisible Mob Wall"),
 	drawtype = "airlike",
@@ -69,9 +69,7 @@ minetest.register_node("invisiblocks:mob_wall", {
 	on_blast = function() end
 })
 
----
---- Recipes
----
+-- Recipes
 
 if recipes and def then
 
@@ -111,9 +109,7 @@ if recipes and def then
 	})
 end
 
----
---- Tools
----
+-- Tools
 
 local function show_blocks(list, icon)
 
@@ -137,6 +133,7 @@ end
 
 -- USE tool to show invisible blocks in 10 node radius
 -- PLACE or Right-Click to remove invisible blocks once placed
+
 minetest.register_tool("invisiblocks:show_stick", {
 	description = S("Show Stick (USE to Show, PLACE to Remove)"),
 	inventory_image = "invisiblocks_stick.png",
@@ -148,28 +145,28 @@ minetest.register_tool("invisiblocks:show_stick", {
 		local pos = user:get_pos()
 
 		local list = minetest.find_nodes_in_area(
-			{x = pos.x - 10, y = pos.y - 10, z = pos.z - 10},
-			{x = pos.x + 10, y = pos.y + 10, z = pos.z + 10},
-			{"invisiblocks:barrier"})
+				{x = pos.x - 10, y = pos.y - 10, z = pos.z - 10},
+				{x = pos.x + 10, y = pos.y + 10, z = pos.z + 10},
+				{"invisiblocks:barrier"})
 
 		show_blocks(list, "invisiblocks_barrier.png")
 
 		list = minetest.find_nodes_in_area(
-			{x = pos.x - 10, y = pos.y - 10, z = pos.z - 10},
-			{x = pos.x + 10, y = pos.y + 10, z = pos.z + 10},
-			{"invisiblocks:light"})
+				{x = pos.x - 10, y = pos.y - 10, z = pos.z - 10},
+				{x = pos.x + 10, y = pos.y + 10, z = pos.z + 10},
+				{"invisiblocks:light"})
 
 		show_blocks(list, "invisiblocks_light.png")
 
 		list = minetest.find_nodes_in_area(
-			{x = pos.x - 10, y = pos.y - 10, z = pos.z - 10},
-			{x = pos.x + 10, y = pos.y + 10, z = pos.z + 10},
-			{"invisiblocks:mob_wall"})
+				{x = pos.x - 10, y = pos.y - 10, z = pos.z - 10},
+				{x = pos.x + 10, y = pos.y + 10, z = pos.z + 10},
+				{"invisiblocks:mob_wall"})
 
 		show_blocks(list, "invisiblocks_mob_wall.png")
 
 		if not minetest.is_creative_enabled(user:get_player_name()) then
-			itemstack:add_wear(65535 / 150) -- 150 uses
+			itemstack:add_wear(65535 / 250) -- 250 uses
 		end
 
 		return itemstack
@@ -177,16 +174,12 @@ minetest.register_tool("invisiblocks:show_stick", {
 
 	on_place = function(itemstack, placer, pointed_thing)
 
-		if pointed_thing.type ~= "node" then
-			return
-		end
+		if pointed_thing.type ~= "node" then return end
 
 		local pos = pointed_thing.under
 		local player_name = placer:get_player_name()
 
-		if minetest.is_protected(pos, player_name) then
-			return
-		end
+		if minetest.is_protected(pos, player_name) then return end
 
 		local node_name = minetest.get_node(pos).name
 
@@ -204,8 +197,8 @@ minetest.register_tool("invisiblocks:show_stick", {
 
 			minetest.remove_node(pos)
 
-			minetest.sound_play("default_break_glass", {
-					pos = pos, gain = 1.0, max_hear_distance = 5}, true)
+			minetest.sound_play("default_break_glass",
+					{pos = pos, gain = 1.0, max_hear_distance = 10}, true)
 		end
 	end
 })
