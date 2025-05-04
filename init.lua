@@ -1,9 +1,9 @@
 
 -- Variables and Settings
 
-local S = minetest.get_translator("invisiblocks")
-local def = minetest.get_modpath("default") and true
-local recipes = minetest.settings:get_bool("invisiblocks.hide_recipes") ~= true
+local S = core.get_translator("invisiblocks")
+local def = core.get_modpath("default") and true
+local recipes = core.settings:get_bool("invisiblocks.hide_recipes") ~= true
 
 -- Nodes
 
@@ -11,7 +11,7 @@ local helper = "invisiblocks_block.png^[multiply:#ff000070"
 
 -- Invisible Barrier
 
-minetest.register_node("invisiblocks:barrier", {
+core.register_node("invisiblocks:barrier", {
 	description = S("Invisible Barrier Block"),
 	drawtype = "airlike",
 	buildable_to = false,
@@ -28,7 +28,7 @@ helper = "invisiblocks_block.png^[multiply:#ffff0070"
 
 -- Invisible Light
 
-minetest.register_node("invisiblocks:light", {
+core.register_node("invisiblocks:light", {
 	description = S("Invisible Light Source"),
 	drawtype = "airlike",
 	buildable_to = false,
@@ -51,7 +51,7 @@ helper = "invisiblocks_block.png^[multiply:#00ff0070"
 
 -- Invisible Mob Wall
 
-minetest.register_node("invisiblocks:mob_wall", {
+core.register_node("invisiblocks:mob_wall", {
 	description = S("Invisible Mob Wall"),
 	drawtype = "airlike",
 	buildable_to = false,
@@ -73,7 +73,7 @@ minetest.register_node("invisiblocks:mob_wall", {
 
 if recipes and def then
 
-	minetest.register_craft({
+	core.register_craft({
 		output = "invisiblocks:barrier 8",
 		recipe = {
 			{"default:glass", "default:stone", "default:glass"},
@@ -82,7 +82,7 @@ if recipes and def then
 		}
 	})
 
-	minetest.register_craft({
+	core.register_craft({
 		output = "invisiblocks:light 8",
 		recipe = {
 			{"default:glass", "default:meselamp", "default:glass"},
@@ -91,7 +91,7 @@ if recipes and def then
 		}
 	})
 
-	minetest.register_craft({
+	core.register_craft({
 		output = "invisiblocks:mob_wall",
 		recipe = {
 			{"default:glass", "group:wood", "default:glass"},
@@ -100,7 +100,7 @@ if recipes and def then
 		}
 	})
 
-	minetest.register_craft({
+	core.register_craft({
 		output = "invisiblocks:show_stick",
 		recipe = {
 			{"invisiblocks:barrier"},
@@ -117,7 +117,7 @@ local function show_blocks(list, icon)
 
 	for n = 1, #list do
 
-		minetest.add_particle({
+		core.add_particle({
 			pos = list[n],
 			velocity = {x = 0, y = 0, z = 0},
 			acceleration = {x = 0, y = 0, z = 0},
@@ -134,7 +134,7 @@ end
 -- USE tool to show invisible blocks in 10 node radius
 -- PLACE or Right-Click to remove invisible blocks once placed
 
-minetest.register_tool("invisiblocks:show_stick", {
+core.register_tool("invisiblocks:show_stick", {
 	description = S("Show Stick (USE to Show, PLACE to Remove)"),
 	inventory_image = "invisiblocks_stick.png",
 	stack_max = 1,
@@ -144,28 +144,28 @@ minetest.register_tool("invisiblocks:show_stick", {
 
 		local pos = user:get_pos()
 
-		local list = minetest.find_nodes_in_area(
+		local list = core.find_nodes_in_area(
 				{x = pos.x - 10, y = pos.y - 10, z = pos.z - 10},
 				{x = pos.x + 10, y = pos.y + 10, z = pos.z + 10},
 				{"invisiblocks:barrier"})
 
 		show_blocks(list, "invisiblocks_barrier.png")
 
-		list = minetest.find_nodes_in_area(
+		list = core.find_nodes_in_area(
 				{x = pos.x - 10, y = pos.y - 10, z = pos.z - 10},
 				{x = pos.x + 10, y = pos.y + 10, z = pos.z + 10},
 				{"invisiblocks:light"})
 
 		show_blocks(list, "invisiblocks_light.png")
 
-		list = minetest.find_nodes_in_area(
+		list = core.find_nodes_in_area(
 				{x = pos.x - 10, y = pos.y - 10, z = pos.z - 10},
 				{x = pos.x + 10, y = pos.y + 10, z = pos.z + 10},
 				{"invisiblocks:mob_wall"})
 
 		show_blocks(list, "invisiblocks_mob_wall.png")
 
-		if not minetest.is_creative_enabled(user:get_player_name()) then
+		if not core.is_creative_enabled(user:get_player_name()) then
 			itemstack:add_wear(65535 / 250) -- 250 uses
 		end
 
@@ -179,9 +179,9 @@ minetest.register_tool("invisiblocks:show_stick", {
 		local pos = pointed_thing.under
 		local player_name = placer:get_player_name()
 
-		if minetest.is_protected(pos, player_name) then return end
+		if core.is_protected(pos, player_name) then return end
 
-		local node_name = minetest.get_node(pos).name
+		local node_name = core.get_node(pos).name
 
 		if node_name == "invisiblocks:barrier"
 		or node_name == "invisiblocks:light"
@@ -192,12 +192,12 @@ minetest.register_tool("invisiblocks:show_stick", {
 			if inv:room_for_item("main", {name = node_name}) then
 				inv:add_item("main", node_name)
 			else
-				minetest.add_item(pos, {name = node_name})
+				core.add_item(pos, {name = node_name})
 			end
 
-			minetest.remove_node(pos)
+			core.remove_node(pos)
 
-			minetest.sound_play("default_break_glass",
+			core.sound_play("default_break_glass",
 					{pos = pos, gain = 1.0, max_hear_distance = 10}, true)
 		end
 	end
