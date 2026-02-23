@@ -24,3 +24,4 @@ This mod exists to add invisible blocks into the world that can be used as a bar
 
  - 0.1 - Initial upload
  - 0.2 - Invisible blocks can only be removed by right-clicking with show stick
+ - 0.3 - Add support for Mineclonia/Voxelibre

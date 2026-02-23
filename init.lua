@@ -3,7 +3,13 @@
 
 local S = core.get_translator("invisiblocks")
 local def = core.get_modpath("default") and true
+local mcl = core.get_modpath("mcl_core") and true
 local recipes = core.settings:get_bool("invisiblocks.hide_recipes") ~= true
+
+-- Sounds
+
+local sound = def and default.node_sound_glass_defaults()
+	or mcl and mcl_sounds.node_sound_glass_defaults()
 
 -- Nodes
 
@@ -19,7 +25,7 @@ core.register_node("invisiblocks:barrier", {
 	wield_image = helper,
 	paramtype = "light",
 	sunlight_propagates = true,
-	sounds = def and default.node_sound_glass_defaults(),
+	sounds = sound,
 	groups = {invisible = 1, unbreakable = 1},
 	on_blast = function() end
 })
@@ -38,11 +44,10 @@ core.register_node("invisiblocks:light", {
 	sunlight_propagates = true,
 	walkable = false,
 	light_source = 14,
-	sounds = def and default.node_sound_glass_defaults(),
+	sounds = sound,
 	groups = {invisible = 1, unbreakable = 1},
 	selection_box = {
-		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
+		type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
 	},
 	on_blast = function() end
 })
@@ -60,43 +65,47 @@ core.register_node("invisiblocks:mob_wall", {
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
-	sounds = def and default.node_sound_glass_defaults(),
+	sounds = sound,
 	groups = {invisible = 1, unbreakable = 1},
 	selection_box = {
-		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
+		type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
 	},
 	on_blast = function() end
 })
 
 -- Recipes
 
-if recipes and def then
+if recipes then
+
+	local stone = mcl and "mcl_core:stone" or "default:stone"
+	local wood = "group:wood"
+	local lamp = mcl and "mcl_redstone_torch:redstoneblock" or "default:meselamp"
+	local glass = mcl and "mcl_core:glass" or "default:glass"
 
 	core.register_craft({
 		output = "invisiblocks:barrier 8",
 		recipe = {
-			{"default:glass", "default:stone", "default:glass"},
-			{"default:glass", "default:glass", "default:glass"},
-			{"default:glass", "default:glass", "default:glass"},
+			{glass, stone, glass},
+			{glass, glass, glass},
+			{glass, glass, glass}
 		}
 	})
 
 	core.register_craft({
 		output = "invisiblocks:light 8",
 		recipe = {
-			{"default:glass", "default:meselamp", "default:glass"},
-			{"default:glass", "default:glass", "default:glass"},
-			{"default:glass", "default:glass", "default:glass"},
+			{glass, lamp, glass},
+			{glass, glass, glass},
+			{glass, glass, glass}
 		}
 	})
 
 	core.register_craft({
 		output = "invisiblocks:mob_wall",
 		recipe = {
-			{"default:glass", "group:wood", "default:glass"},
-			{"default:glass", "default:glass", "default:glass"},
-			{"default:glass", "default:glass", "default:glass"},
+			{glass, wood, glass},
+			{glass, glass, glass},
+			{glass, glass, glass}
 		}
 	})
 
