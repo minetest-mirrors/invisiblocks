@@ -82,6 +82,10 @@ if recipes then
 	local lamp = mcl and "mcl_redstone_torch:redstoneblock" or "default:meselamp"
 	local glass = mcl and "mcl_core:glass" or "default:glass"
 
+	if core.get_modpath("mesecons_torch") then
+		lamp = "mesecons_torch:redstoneblock"
+	end
+
 	core.register_craft({
 		output = "invisiblocks:barrier 8",
 		recipe = {
