@@ -1,0 +1,10 @@
+# textdomain: invisiblocks
+
+# ContentDB
+Invisiblocks=Невидимые Блоки
+Add invisible barrier, light and mob wall into game=Добавляет невидимый баррьер, свет, и стену для мобов в игру
+
+# Nodes
+Barrier Block=Баррьерный Блок
+Light Source=Источник Света
+Mob Wall=Стена для Мобов
