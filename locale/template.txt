@@ -6,6 +6,6 @@ Invisiblocks=
 Add invisible barrier, light and mob wall into game=
 
 # Nodes
-Invisible Barrier Block=
-Invisible Light Source=
-Invisible Mob Wall=
+Barrier Block=
+Light Source=
+Mob Wall=
