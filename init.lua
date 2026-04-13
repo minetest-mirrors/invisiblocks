@@ -124,7 +124,8 @@ core.register_on_punchnode(function(pos, node, p)
 
 	local iname = p:get_wielded_item():get_name()
 
-	if iname == node.name and not core.is_protected(pos, p:get_player_name()) then
+	if node.name:find("invisiblocks:") and iname == node.name
+	and not core.is_protected(pos, p:get_player_name()) then
 
 		core.node_dig(pos, node, p)
 

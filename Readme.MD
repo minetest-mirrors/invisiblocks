@@ -9,7 +9,7 @@ This mod exists to add invisible blocks into the world that can be used as a bar
  - Craft 8x Invisible Barrier with 8x glass and 1x stone top middle
  - Craft 8x Invisible Light with 8x glass and 1x meselamp top middle
  - Craft 8x Invisible Mob Wall with 8x glass and 1x wood top middle
- - Holding a specific invisiblock shows all others within the area
+ - Holding a specific invisiblock lets you see and dig all others within the area
  - Mob Walls only cause Mobs Redo mobs to stop
  - Toggle 'invisiblocks.hide_recipes' setting to hide all recipes for above items
 
