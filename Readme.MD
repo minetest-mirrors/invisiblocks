@@ -9,9 +9,7 @@ This mod exists to add invisible blocks into the world that can be used as a bar
  - Craft 8x Invisible Barrier with 8x glass and 1x stone top middle
  - Craft 8x Invisible Light with 8x glass and 1x meselamp top middle
  - Craft 8x Invisible Mob Wall with 8x glass and 1x wood top middle
- - Craft Show Stick with 1x stick and 1x invisible barrier on top
- - Use Show Stick to indicate where all invisible blocks are placed with specific icons
- - Right-Click with Show Stick to remove invisible block pointed at
+ - Holding a specific invisiblock shows all others within the area
  - Mob Walls only cause Mobs Redo mobs to stop
  - Toggle 'invisiblocks.hide_recipes' setting to hide all recipes for above items
 
@@ -25,3 +23,4 @@ This mod exists to add invisible blocks into the world that can be used as a bar
  - 0.1 - Initial upload
  - 0.2 - Invisible blocks can only be removed by right-clicking with show stick
  - 0.3 - Add support for Mineclonia/Voxelibre
+ - 0.4 - Holding an invisible node will show others in the area (thx SkyBuilder1717)

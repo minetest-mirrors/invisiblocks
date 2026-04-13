@@ -1,22 +1,25 @@
 
--- Variables and Settings
+-- == Variables and Settings
 
-local S = core.get_translator("invisiblocks")
-local def = core.get_modpath("default") and true
-local mcl = core.get_modpath("mcl_core") and true
+local S = core.get_translator(core.get_current_modname())
+local def = core.get_modpath("default")
+local mcl = core.get_modpath("mcl_core")
 local recipes = core.settings:get_bool("invisiblocks.hide_recipes") ~= true
+local radius = core.settings:get("invisiblocks.radius") or 10
+local delay = core.settings:get("invisiblocks.delay") or 0.5
 
--- Sounds
+-- == Sounds
 
 local sound = def and default.node_sound_glass_defaults()
 	or mcl and mcl_sounds.node_sound_glass_defaults()
 
--- Nodes
+-- == Nodes
 
--- Invisible Barrier
+local group = {invisible = 1, unbreakable = 1}
 
+-- Barrier
 core.register_node("invisiblocks:barrier", {
-	description = S("Invisible Barrier Block"),
+	description = S("Barrier Block"),
 	drawtype = "airlike",
 	buildable_to = false,
 	inventory_image = "invisiblocks_barrier.png",
@@ -24,14 +27,13 @@ core.register_node("invisiblocks:barrier", {
 	paramtype = "light",
 	sunlight_propagates = true,
 	sounds = sound,
-	groups = {invisible = 1, unbreakable = 1},
+	groups = group,
 	on_blast = function() end
 })
 
--- Invisible Light
-
+-- Light
 core.register_node("invisiblocks:light", {
-	description = S("Invisible Light Source"),
+	description = S("Light Source"),
 	drawtype = "airlike",
 	buildable_to = false,
 	inventory_image = "invisiblocks_light.png",
@@ -41,33 +43,100 @@ core.register_node("invisiblocks:light", {
 	walkable = false,
 	light_source = 14,
 	sounds = sound,
-	groups = {invisible = 1, unbreakable = 1},
+	groups = group,
 	selection_box = {
 		type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
 	},
 	on_blast = function() end
 })
 
--- Invisible Mob Wall
-
+-- Mob Wall
 core.register_node("invisiblocks:mob_wall", {
-	description = S("Invisible Mob Wall"),
+	description = S("Mob Wall"),
 	drawtype = "airlike",
 	buildable_to = false,
 	inventory_image = "invisiblocks_mob_wall.png",
 	wield_image = "invisiblocks_mob_wall.png",
 	paramtype = "light",
 	sunlight_propagates = true,
-	walkable = false,
 	sounds = sound,
-	groups = {invisible = 1, unbreakable = 1},
+	groups = group,
+	walkable = false,
 	selection_box = {
 		type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
 	},
 	on_blast = function() end
 })
 
--- Recipes
+-- == Globalstep
+
+local get_players = core.get_connected_players
+local timer = 0
+
+core.register_globalstep(function(dtime)
+
+	timer = timer + dtime ; if timer < delay then return end ; timer = 0
+
+	for _, player in pairs(get_players()) do
+
+		local name = player:get_player_name()
+		local iname = player:get_wielded_item():get_name()
+
+		if string.find(iname, "invisiblocks:") then
+
+			local pos = player:get_pos()
+			local nodes = core.find_nodes_in_area(
+					{x = pos.x - radius, y = pos.y - radius, z = pos.z - radius},
+					{x = pos.x + radius, y = pos.y + radius, z = pos.z + radius},
+					{"invisiblocks:mob_wall", "invisiblocks:light", "invisiblocks:barrier"
+			}, true)
+
+			local list = {}
+
+			for node, positions in pairs(nodes) do
+
+				if node == iname then
+
+					local texture = core.registered_nodes[node].inventory_image
+
+					for _, p in pairs(positions) do
+
+						core.add_particle({
+							pos = p,
+							velocity = {x = 0, y = 0, z = 0},
+							acceleration = {x = 0, y = 0, z = 0},
+							expirationtime = delay,
+							size = 7,
+							playername = name,
+							texture = texture,
+							glow = 10
+						})
+					end
+				end
+			end
+		end
+	end
+end)
+
+--== Punch Function (only players holding an invisi-node with permission can remove it)
+
+core.register_on_punchnode(function(pos, node, p)
+
+	local iname = p:get_wielded_item():get_name()
+
+	if iname == node.name and not core.is_protected(pos, p:get_player_name()) then
+
+		core.node_dig(pos, node, p)
+
+		local def = core.registered_nodes[node.name]
+
+		if def and def.sounds and def.sounds.dug then
+			core.sound_play(def.sounds.dug, {pos = pos}, true)
+		end
+	end
+end)
+
+--== Recipes
 
 if recipes then
 
@@ -76,24 +145,20 @@ if recipes then
 	local lamp = mcl and "mcl_redstone_torch:redstoneblock" or "default:meselamp"
 	local glass = mcl and "mcl_core:glass" or "default:glass"
 
-	if core.get_modpath("mesecons_torch") then
-		lamp = "mesecons_torch:redstoneblock"
-	end
-
 	core.register_craft({
-		output = "invisiblocks:barrier 8",
+		output = "invisiblocks:barrier",
 		recipe = {
-			{glass, stone, glass},
 			{glass, glass, glass},
+			{glass, stone, glass},
 			{glass, glass, glass}
 		}
 	})
 
 	core.register_craft({
-		output = "invisiblocks:light 8",
+		output = "invisiblocks:light",
 		recipe = {
-			{glass, lamp, glass},
 			{glass, glass, glass},
+			{glass, lamp, glass},
 			{glass, glass, glass}
 		}
 	})
@@ -101,111 +166,18 @@ if recipes then
 	core.register_craft({
 		output = "invisiblocks:mob_wall",
 		recipe = {
-			{glass, wood, glass},
 			{glass, glass, glass},
+			{glass, wood, glass},
 			{glass, glass, glass}
 		}
 	})
-
-	core.register_craft({
-		output = "invisiblocks:show_stick",
-		recipe = {
-			{"invisiblocks:barrier"},
-			{"group:stick"},
-		}
-	})
 end
 
--- Tools
+--== Compatibility
 
-local function show_blocks(list, icon)
+local stick = mcl and "mcl_core:stick" or "default:stick"
 
-	if not list or #list == 0 then return end
+core.register_alias("invisiblocks:show_stick", stick)
 
-	for n = 1, #list do
 
-		core.add_particle({
-			pos = list[n],
-			velocity = {x = 0, y = 0, z = 0},
-			acceleration = {x = 0, y = 0, z = 0},
-			expirationtime = 5,
-			size = 4,
-			collisiondetection = false,
-			vertical = false,
-			texture = icon,
-			glow = 5
-		})
-	end
-end
-
--- USE tool to show invisible blocks in 10 node radius
--- PLACE or Right-Click to remove invisible blocks once placed
-
-core.register_tool("invisiblocks:show_stick", {
-	description = S("Show Stick (USE to Show, PLACE to Remove)"),
-	inventory_image = "invisiblocks_stick.png",
-	stack_max = 1,
-	groups = {stick = 1},
-
-	on_use = function(itemstack, user, pointed_thing)
-
-		local pos = user:get_pos()
-
-		local list = core.find_nodes_in_area(
-				{x = pos.x - 10, y = pos.y - 10, z = pos.z - 10},
-				{x = pos.x + 10, y = pos.y + 10, z = pos.z + 10},
-				{"invisiblocks:barrier"})
-
-		show_blocks(list, "invisiblocks_barrier.png")
-
-		list = core.find_nodes_in_area(
-				{x = pos.x - 10, y = pos.y - 10, z = pos.z - 10},
-				{x = pos.x + 10, y = pos.y + 10, z = pos.z + 10},
-				{"invisiblocks:light"})
-
-		show_blocks(list, "invisiblocks_light.png")
-
-		list = core.find_nodes_in_area(
-				{x = pos.x - 10, y = pos.y - 10, z = pos.z - 10},
-				{x = pos.x + 10, y = pos.y + 10, z = pos.z + 10},
-				{"invisiblocks:mob_wall"})
-
-		show_blocks(list, "invisiblocks_mob_wall.png")
-
-		if not core.is_creative_enabled(user:get_player_name()) then
-			itemstack:add_wear(65535 / 250) -- 250 uses
-		end
-
-		return itemstack
-	end,
-
-	on_place = function(itemstack, placer, pointed_thing)
-
-		if pointed_thing.type ~= "node" then return end
-
-		local pos = pointed_thing.under
-		local player_name = placer:get_player_name()
-
-		if core.is_protected(pos, player_name) then return end
-
-		local node_name = core.get_node(pos).name
-
-		if node_name == "invisiblocks:barrier"
-		or node_name == "invisiblocks:light"
-		or node_name == "invisiblocks:mob_wall" then
-
-			local inv = placer:get_inventory()
-
-			if inv:room_for_item("main", {name = node_name}) then
-				inv:add_item("main", node_name)
-			else
-				core.add_item(pos, {name = node_name})
-			end
-
-			core.remove_node(pos)
-
-			core.sound_play("default_break_glass",
-					{pos = pos, max_hear_distance = 10}, true)
-		end
-	end
-})
+print("[MOD] Invisiblocks loaded")
