@@ -13,16 +13,14 @@ local sound = def and default.node_sound_glass_defaults()
 
 -- Nodes
 
-local helper = "invisiblocks_block.png^[multiply:#ff000070"
-
 -- Invisible Barrier
 
 core.register_node("invisiblocks:barrier", {
 	description = S("Invisible Barrier Block"),
 	drawtype = "airlike",
 	buildable_to = false,
-	inventory_image = helper,
-	wield_image = helper,
+	inventory_image = "invisiblocks_barrier.png",
+	wield_image = "invisiblocks_barrier.png",
 	paramtype = "light",
 	sunlight_propagates = true,
 	sounds = sound,
@@ -30,16 +28,14 @@ core.register_node("invisiblocks:barrier", {
 	on_blast = function() end
 })
 
-helper = "invisiblocks_block.png^[multiply:#ffff0070"
-
 -- Invisible Light
 
 core.register_node("invisiblocks:light", {
 	description = S("Invisible Light Source"),
 	drawtype = "airlike",
 	buildable_to = false,
-	inventory_image = helper,
-	wield_image = helper,
+	inventory_image = "invisiblocks_light.png",
+	wield_image = "invisiblocks_light.png",
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
@@ -52,16 +48,14 @@ core.register_node("invisiblocks:light", {
 	on_blast = function() end
 })
 
-helper = "invisiblocks_block.png^[multiply:#00ff0070"
-
 -- Invisible Mob Wall
 
 core.register_node("invisiblocks:mob_wall", {
 	description = S("Invisible Mob Wall"),
 	drawtype = "airlike",
 	buildable_to = false,
-	inventory_image = helper,
-	wield_image = helper,
+	inventory_image = "invisiblocks_mob_wall.png",
+	wield_image = "invisiblocks_mob_wall.png",
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
@@ -211,7 +205,7 @@ core.register_tool("invisiblocks:show_stick", {
 			core.remove_node(pos)
 
 			core.sound_play("default_break_glass",
-					{pos = pos, gain = 1.0, max_hear_distance = 10}, true)
+					{pos = pos, max_hear_distance = 10}, true)
 		end
 	end
 })
