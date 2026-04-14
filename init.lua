@@ -72,6 +72,10 @@ core.register_node("invisiblocks:mob_wall", {
 
 local get_players = core.get_connected_players
 local timer = 0
+local items = {
+	["invisiblocks:barrier"] = "invisiblocks_barrier.png",
+	["invisiblocks:light"] =  "invisiblocks_light.png",
+	["invisiblocks:mob_wall"] = "invisiblocks_mob_wall.png"}
 
 core.register_globalstep(function(dtime)
 
@@ -82,37 +86,25 @@ core.register_globalstep(function(dtime)
 		local name = player:get_player_name()
 		local iname = player:get_wielded_item():get_name()
 
-		if string.find(iname, "invisiblocks:") then
+		if items[iname] then
 
 			local pos = player:get_pos()
 			local nodes = core.find_nodes_in_area(
 					{x = pos.x - radius, y = pos.y - radius, z = pos.z - radius},
-					{x = pos.x + radius, y = pos.y + radius, z = pos.z + radius},
-					{"invisiblocks:mob_wall", "invisiblocks:light", "invisiblocks:barrier"
-			}, true)
+					{x = pos.x + radius, y = pos.y + radius, z = pos.z + radius}, iname)
 
-			local list = {}
+			for _, p in pairs(nodes) do
 
-			for node, positions in pairs(nodes) do
-
-				if node == iname then
-
-					local texture = core.registered_nodes[node].inventory_image
-
-					for _, p in pairs(positions) do
-
-						core.add_particle({
-							pos = p,
-							velocity = {x = 0, y = 0, z = 0},
-							acceleration = {x = 0, y = 0, z = 0},
-							expirationtime = delay,
-							size = 7,
-							playername = name,
-							texture = texture,
-							glow = 10
-						})
-					end
-				end
+				core.add_particle({
+					pos = p,
+					velocity = {x = 0, y = 0, z = 0},
+					acceleration = {x = 0, y = 0, z = 0},
+					expirationtime = delay,
+					size = 7,
+					playername = name,
+					texture = items[iname],
+					glow = 10
+				})
 			end
 		end
 	end
@@ -124,7 +116,7 @@ core.register_on_punchnode(function(pos, node, p)
 
 	local iname = p:get_wielded_item():get_name()
 
-	if node.name:find("invisiblocks:") and iname == node.name
+	if items[iname] and iname == node.name
 	and not core.is_protected(pos, p:get_player_name()) then
 
 		core.node_dig(pos, node, p)
