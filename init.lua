@@ -62,6 +62,7 @@ core.register_node("invisiblocks:mob_wall", {
 	sounds = sound,
 	groups = group,
 	walkable = false,
+	_pathfinding_class = "IGNORE", -- mineclonia flag for pathfinding
 	selection_box = {
 		type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
 	},
