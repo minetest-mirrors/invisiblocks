@@ -5,7 +5,7 @@ local S = core.get_translator(core.get_current_modname())
 local def = core.get_modpath("default")
 local mcl = core.get_modpath("mcl_core")
 local recipes = core.settings:get_bool("invisiblocks.hide_recipes") ~= true
-local radius = core.settings:get("invisiblocks.radius") or 10
+local radius = core.settings:get("invisiblocks.radius") or 8
 local delay = core.settings:get("invisiblocks.delay") or 0.5
 
 -- == Sounds
